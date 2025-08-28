@@ -1,0 +1,49 @@
+---
+// This component will eventually receive the story content as a prop.
+// For now, it's a static placeholder.
+---
+
+<div id="manuscript-container">
+    <div id="manuscript-content">
+        <h1>The Ramayana</h1>
+        <p>In the ancient city of Ayodhya, ruled by the righteous King Dasharatha, a divine prince was born. He was Rama, an incarnation of Vishnu, destined to walk the earth and establish dharma...</p>
+        <p>His story is one of courage, devotion, and the eternal struggle between good and evil, a timeless epic that has guided generations.</p>
+    </div>
+</div>
+
+<style>
+    #manuscript-container {
+        /* This container is a flexbox to center the content perfectly */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 100; /* Must be on top of the papyrus overlay */
+        pointer-events: none; /* So it doesn't block clicks initially */
+    }
+
+    #manuscript-content {
+        color: #1a1a1a; /* High-contrast, near-black text */
+        font-family: Georgia, serif; /* A classic, readable serif font */
+        max-width: 650px; /* Set a max width for readability */
+        line-height: 1.8;
+        text-align: center;
+
+        /* Initial state for our placeholder animation (invisible and slightly moved down) */
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    #manuscript-content h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    #manuscript-content p {
+        font-size: 1.1rem;
+    }
+</style>

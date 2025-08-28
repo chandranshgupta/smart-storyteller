@@ -1,0 +1,90 @@
+---
+// Import BOTH constellation components
+import StoryConstellation from './StoryConstellation.astro';
+import MahabharataConstellation from './MahabharataConstellation.astro'; 
+---
+
+<main>
+    <div id="ui-content" class="container">
+        <h1>The Celestial Map</h1>
+        <p>Choose a story from the Nakshatras.</p>
+    </div>
+
+    <StoryConstellation
+      storyId="ramayana"
+      iconSrc="/rama-paduka.png"
+      position={{ top: '20%', left: '15%' }}
+      stars={[]}
+    />
+
+    <MahabharataConstellation
+      storyId="mahabharata"
+      iconSrc="/chakra-icon.png"  
+      position={{ top: '55%', left: '70%' }}
+    />
+</main>
+---
+
+
+<canvas id="bg"></canvas>
+<div id="transition-overlay"></div>
+
+<style>
+    /* 2. Add a new style rule for our main container */
+    main {
+        position: relative; /* This is crucial for stacking */
+        width: 100%;
+        height: 100vh;
+        z-index: 1; /* Puts all UI on top of the background canvas */
+    }
+
+    /* 3. Re-center the title container */
+    #ui-content.container {
+        display: grid;
+        place-content: center;
+        text-align: center;
+        /* Position it in the vertical center and allow constellations to position around it */
+        position: absolute;
+        width: 100%;
+        top: 45%;
+        transform: translateY(-50%);
+        pointer-events: none; /* Make it non-interactive so we can click things behind it */
+    }
+
+    #bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1; /* This correctly places the canvas in the background */
+    }
+
+    #transition-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: #f5f5dc;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 99;
+    }
+
+    h1 {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+        color: #ffffff;
+        text-shadow: 0 0 10px rgba(0,0,0,0.5); /* Add a shadow to make text more readable */
+    }
+    p {
+        color: #e0e0e0;
+        text-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+</style>
+
+<script>
+    import { initScene } from '../scripts/scene.js';
+    initScene();
+</script>

@@ -1,0 +1,98 @@
+---
+export interface Props {
+  storyId: string;
+  iconSrc: string;
+  position: { top: string; left: string };
+}
+const { storyId, iconSrc, position } = Astro.props;
+---
+<div id={storyId} class="constellation-container" style={`top: ${position.top}; left: ${position.left};`}>
+    
+    <div class="star s1"></div>
+    <div id="antares" class="star"></div>
+    <div class="star s3"></div>
+    <div class="star s4"></div>
+    <div class="star s5"></div>
+
+    <img class="story-icon" src={iconSrc} alt={`${storyId} Icon`} />
+    <canvas class="constellation-canvas"></canvas>
+</div>
+
+<style>
+    .constellation-container {
+        position: absolute; width: 250px; height: 200px; z-index: 10;
+        transition: filter 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        filter: drop-shadow(0 0 8px rgba(138, 111, 111, 0));
+    }
+    .constellation-container.is-active { filter: drop-shadow(0 0 25px #ff8c5a); }
+    .story-icon {
+        position: absolute; width: 45px; cursor: pointer;
+        transition: transform 0.3s ease, filter 0.3s ease;
+        filter: drop-shadow(0 0 8px #ff8c5a);
+        /* Positioned on top of Antares */
+        top: 32px; left: 142px;
+    }
+    .story-icon:hover { transform: scale(1.2); filter: drop-shadow(0 0 15px #ff5733); }
+    
+    /* General star style */
+    .star { position: absolute; border-radius: 50%; background-color: #ffc9a3; box-shadow: 0 0 12px 3px #ffc9a3; }
+
+    /* Specific star positions for Scorpius */
+    .s1 { width: 10px; height: 10px; top: 60px; left: 40px; }
+    #antares { /* The Heart of the Scorpion */
+        width: 25px; height: 25px; top: 40px; left: 150px;
+        background-color: #ff5733; box-shadow: 0 0 25px 10px #ff5733a0;
+    }
+    .s3 { width: 12px; height: 12px; top: 85px; left: 190px; }
+    .s4 { width: 10px; height: 10px; top: 120px; left: 180px; }
+    .s5 { width: 10px; height: 10px; top: 150px; left: 150px; }
+
+    .constellation-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+</style>
+
+<script>
+    import gsap from "gsap"; // Import GSAP
+
+    const container = document.getElementById(Astro.props.storyId);
+    const icon = container.querySelector('.story-icon');
+    let hoverAnimation = null; // Variable to hold our animation
+
+    // --- NEW: Hover Animations ---
+    icon.addEventListener('mouseenter', () => {
+        // Start the looping "breathing" animation on hover
+        hoverAnimation = gsap.to(icon, {
+            scale: 1.15,
+            duration: 1.5,
+            ease: 'sine.inOut',
+            repeat: -1,
+            yoyo: true
+        });
+    });
+
+    icon.addEventListener('mouseleave', () => {
+        // Stop the animation and return to normal on mouse leave
+        if (hoverAnimation) {
+            hoverAnimation.kill();
+        }
+        gsap.to(icon, { scale: 1, duration: 0.3, ease: 'power2.out' });
+    });
+
+    // --- Existing Click Event ---
+    icon.addEventListener('click', () => {
+        container.classList.add('is-active');
+        document.querySelectorAll('.constellation-container').forEach(el => {
+            if (el.id !== container.id) el.style.opacity = '0';
+        });
+        setTimeout(() => {
+            const overlay = document.querySelector('#transition-overlay');
+            if (overlay) {
+                overlay.style.transition = 'opacity 1s ease-in-out';
+                overlay.style.opacity = '1';
+            }
+        }, 800);
+    });
+
+    // --- Existing Canvas Drawing for Scorpius ---
+    const canvas = container.querySelector('.constellation-canvas');
+    // ... the rest of the custom line-drawing script for Scorpius is the same ...
+</script>

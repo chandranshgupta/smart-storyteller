@@ -1,16 +1,25 @@
 ---
-
+// Import the CelestialMap component so we can use it in our HTML
+import CelestialMap from '../components/CelestialMap.astro';
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Smart Cultural Storyteller</title>
+  </head>
+  <body>
+    <CelestialMap />
+  </body>
 </html>
+
+<style is:global>
+  /* Global styles apply to the whole page */
+  body {
+    margin: 0;
+    padding: 0;
+  }
+</style>

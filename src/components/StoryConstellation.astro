@@ -1,0 +1,98 @@
+---
+// --- PROPS ---
+// This defines the data our component needs to receive
+export interface Props {
+  storyId: string; // A unique ID like "ramayana"
+  iconSrc: string; // Path to the icon, e.g., "/rama-paduka.png"
+  position: { top: string; left: string }; // Position on the screen
+  stars: { name: string; style: string }[]; // Array of stars to draw
+}
+const { storyId, iconSrc, position, stars } = Astro.props;
+---
+
+<div id={storyId} class="constellation-container" style={`top: ${position.top}; left: ${position.left};`}>
+    
+    <img class="story-icon" src={iconSrc} alt={`${storyId} Icon`} />
+
+    <div class="star castor"></div>
+    <div class="star pollux"></div>
+    <span class="label castor-label">Castor</span>
+    <span class="label pollux-label">Pollux</span>
+
+    <canvas class="constellation-canvas"></canvas>
+</div>
+
+<style>
+    .constellation-container {
+        position: absolute;
+        width: 250px;
+        height: 200px;
+        z-index: 10;
+        transition: filter 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0));
+    }
+    .constellation-container.is-active {
+        filter: drop-shadow(0 0 25px #fff);
+    }
+    .story-icon {
+        position: absolute;
+        width: 45px;
+        top: 60px;
+        left: 105px;
+        cursor: pointer;
+        transition: transform 0.3s ease, filter 0.3s ease;
+        filter: drop-shadow(0 0 8px #fff);
+    }
+    .story-icon:hover {
+        transform: scale(1.2);
+        filter: drop-shadow(0 0 15px #00ffff);
+    }
+    /* ... other styles for stars, labels, canvas remain the same ... */
+    .star { position: absolute; border-radius: 50%; background-color: white; box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.7); }
+    .castor { width: 15px; height: 15px; top: 40px; left: 50px; background-color: #aaccff; }
+    .pollux { width: 20px; height: 20px; top: 90px; left: 170px; background-color: #ffccaa; }
+    .label { position: absolute; color: #ddd; font-size: 14px; }
+    .castor-label { top: 15px; left: 40px; }
+    .pollux-label { top: 115px; left: 165px; }
+    .constellation-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+</style>
+
+<script>
+    import gsap from "gsap";
+
+    const container = document.getElementById(Astro.props.storyId);
+    const icon = container.querySelector('.story-icon');
+
+    // Hover animation logic remains the same...
+    let hoverAnimation = null;
+    // ...
+
+    // --- UPDATED CLICK EVENT ---
+    icon.addEventListener('click', () => {
+        console.log(`Story selected: ${container.id}`);
+        container.classList.add('is-active'); // Glow effect
+
+        document.querySelectorAll('.constellation-container').forEach(el => {
+            if (el.id !== container.id) el.style.opacity = '0'; // Hide others
+        });
+        
+        // Use a GSAP timeline for a clean animation sequence
+        const tl = gsap.timeline();
+
+        // 1. Fade in the papyrus background (the overlay)
+        tl.to('#transition-overlay', {
+            opacity: 1,
+            duration: 1,
+            ease: 'power1.inOut',
+            delay: 0.5 // A brief pause after the click
+        });
+        
+        // 2. Animate the manuscript content into view
+        tl.to('#manuscript-content', {
+            opacity: 1,
+            y: 0, // Animate transform from 30px to 0
+            duration: 1.2,
+            ease: 'power2.out'
+        }, "-=0.5"); // Overlap this animation slightly with the end of the fade-in
+    });
+</script>
